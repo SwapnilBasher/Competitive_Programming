@@ -123,21 +123,25 @@ int main( void )
 
             cin >> a >> b ;
 
-            if( s.find(a) == s.end() )  {
+             M.insert( { a , ++val } ) ;
 
-                s.insert(a) ;
+            M.insert( { b , ++val } ) ;  
 
-                M[a] = val++ ;  
+            // if( s.find(a) == s.end() )  {
 
-            }
+            //     s.insert(a) ;
 
-            if( s.find(b) == s.end() )  {
+            //     M[a] = val++ ;  
 
-                s.insert(b) ;
+            // }
 
-                M[b] = val++ ;  
+            // if( s.find(b) == s.end() )  {
 
-            }
+            //     s.insert(b) ;
+
+            //     M[b] = val++ ;  
+
+            // }
 
             adjacency_list[ M[a] ].push_back( M[b] ) ;
 
