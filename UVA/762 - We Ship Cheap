@@ -1,0 +1,190 @@
+#pragma GCC optimize("O3")
+#include <bits/stdc++.h>
+#define LL long long
+#define endl "\n"
+
+using namespace std ;
+
+const int sz = 1e4+10 ;
+
+bool mark[sz] ;
+
+int ancestor[sz] ;      // for storing parent node
+
+set<string> s ;     //  I used map-M to give every unique input string a fixed number
+                    // so I used set-s to ensure that same input-string hasn't been
+                    // numbered twice . 
+
+map<string,int> M ;     // giving each input-string a number 
+
+vector<int> ans ;       // for printing path ; source to destination is stored in this vector
+
+void BFS( vector<int> const (&v)[sz] , string source )      //  for array of vector 
+                                                            // const ........
+{
+
+    mark[ M[source] ] = true ;      // marking source 
+
+    ancestor[ M[source] ] = -1 ;        // source has no ancestor 
+
+    queue<int> Q ;
+
+    Q.push( M[source] ) ;
+    
+    while( !Q.empty() )  {
+
+        int vertex = Q.front() ;
+
+        Q.pop() ;
+
+        for( int i = 0 ; i < v[vertex].size() ; i++ )  {
+
+            if( mark[ v[vertex][i] ] == false )  {      // if not visited earlier 
+
+                mark[ v[ vertex ][i] ] = true ;     // not it has been visited 
+
+                ancestor[ v[vertex][i] ] = vertex ; // storing it's ancestor 
+
+                Q.push( v[vertex][i] ) ;   
+
+            }
+
+        }
+
+    }
+
+}
+
+void path_print( int s , int d )
+{
+
+    if( s == d )  {
+
+        ans.push_back(s) ;
+
+        return ;        // without it source will be pushed twice for last line of this function
+
+    }
+
+    else if( ancestor[d] == 0  )  {
+
+        ans.push_back(-420) ;  
+
+    }
+
+    else  {
+
+        path_print( s , ancestor[d] ) ;
+
+    }
+
+    ans.push_back( d ) ;  
+
+}
+
+int main( void )
+{
+
+    #ifndef ONLINE_JUDGE
+        freopen( "input.txt" , "r" , stdin ) ;
+        freopen( "output.txt" , "w" , stdout ) ;
+    #endif // ONLINE_JUDGE
+
+    ios_base::sync_with_stdio( false ) ;
+
+    cin.tie( NULL ) ;
+
+    cout.tie( NULL ) ;  
+
+    int n ;
+
+    int run = 1 ;       // run-variable is used for new line maintaining purpose
+
+    while( cin >> n )
+    {        
+
+        if( run != 1 )  cout << endl ;
+
+        run++ ;
+
+        s.clear() ;     // must be cleared
+
+        M.clear() ;     // same as above
+
+        vector<int> adjacency_list[sz] ;
+
+        memset( mark , 0 , sizeof(mark) ) ;
+
+        memset( ancestor , 0 , sizeof(ancestor) ) ;  
+
+        for( int i = 1 , val = 1 ; i <= n ; i++ )  {
+
+            string a , b ;
+
+            cin >> a >> b ;
+
+            if( s.find(a) == s.end() )  {
+
+                s.insert(a) ;
+
+                M[a] = val++ ;  
+
+            }
+
+            if( s.find(b) == s.end() )  {
+
+                s.insert(b) ;
+
+                M[b] = val++ ;  
+
+            }
+
+            adjacency_list[ M[a] ].push_back( M[b] ) ;
+
+            adjacency_list[ M[b] ].push_back( M[a] ) ;  
+
+        }
+
+        string source , destination ;
+
+        cin >> source >> destination ; 
+
+        if( M[source] == 0 || M[destination] == 0 )  {     
+
+            cout << "No route" << endl ;  
+
+            continue ;
+
+        }
+
+        BFS( adjacency_list , source ) ;  
+
+        ans.clear() ;  
+
+        path_print( M[source] , M[destination] ) ;   
+
+        map<int,string> rm ;    // map reverse  
+
+        for( auto i = M.begin() ; i != M.end() ; i++ )  {
+
+            rm[ i->second ] = i->first ;  
+
+        }
+
+        auto it = find( ans.begin() , ans.end() , -420 ) ;
+
+        if( it == ans.end() )  
+
+        for( int i = 0 ; i < ans.size()-1 ; i++ )  {
+
+            cout << rm[ans[i]] << " " << rm[ans[i+1]] << endl ;    
+
+        }
+
+        else  cout << "No route" << endl ;   
+
+    }
+
+    return 0 ;
+
+}
