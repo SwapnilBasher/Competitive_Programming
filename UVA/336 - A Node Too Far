@@ -1,0 +1,166 @@
+#pragma GCC optimize("O3")
+#include <bits/stdc++.h>
+#define LL long long
+#define endl "\n"
+
+using namespace std ;
+
+const int sz = 1e6+10 ;
+
+bool visited[sz] ;
+
+int level[sz] ;  
+
+map<int,int> M ;  
+
+void BFS( vector<int> const (&v)[sz] , int start , int value )
+{
+
+    level[start] = value ;
+
+    visited[start] = true ;
+
+    queue<int> Q ;
+
+    Q.push( start ) ;
+
+    while( !Q.empty() )  {
+
+        int vertex = Q.front() ;
+
+        Q.pop() ;
+
+        for( int i = 0 ; i < v[vertex].size() ; i++ )  {
+
+            if( visited[ v[vertex][i] ] == false )  {
+
+                visited[ v[vertex][i] ] = true ;
+
+                level[ v[vertex][i] ] = level[ vertex ] - 1 ;
+
+                Q.push( v[vertex][i] ) ;  
+
+            }
+
+        }
+
+    }
+
+}
+
+int not_reachable_node_count( void )
+{
+    
+    
+   /* cout << "#############" << endl ;
+    
+    cout << "key " << "   mapped value      condition " << endl ;
+    
+    for( auto i = M.begin() ; i != M.end() ; i++ )  {
+
+        cout << i->first << "   " << i->second << "   " << visited[ i->second ] << endl ;
+
+    }
+    
+    cout << "#############" << endl ; */
+
+    int cnt = 0 ;
+
+    for( int i = 0 ; i < sz ; i++ )  if( level[i] < 0 )  cnt++ ;
+    
+   // cout << "loop seshe " << cnt << endl ;
+
+    for( auto i = M.begin() ; i != M.end() ; i++ )  {
+
+        if( visited[ i->second ] == false )  cnt++ ;  // if any vertex is absent in adjacent_list
+                                                    // then we've to check no of visited vertex no
+
+    }
+
+    return cnt ;  
+
+}
+
+int main( void )
+{
+
+    #ifndef ONLINE_JUDGE
+        freopen( "input.txt" , "r" , stdin ) ;
+        freopen( "output.txt" , "w" , stdout ) ;
+    #endif // ONLINE_JUDGE
+
+    ios_base::sync_with_stdio( false ) ;  
+
+    cin.tie( NULL ) ;
+
+    cout.tie( NULL ) ;  
+
+    int n ;
+
+    int caseno = 1 ; 
+
+    while( cin >> n && n != 0 )  {
+
+        int temp = n ;
+
+        vector<int> adjacent_list[sz] ;  
+
+        M.clear() ;  
+
+        int xyz = 1 ;       // a variable used for mapping input vertices 
+
+        while( temp-- )  {
+
+            int x , y ;
+
+            cin >> x >> y ;
+
+            M.insert( { x , ++xyz } ) ;    
+
+            M.insert( { y , ++xyz } ) ;  
+            
+            if( x != y )  {
+                
+                    adjacent_list[ M[x] ].push_back( M[y] ) ;
+
+                    adjacent_list[ M[y] ].push_back( M[x] ) ; 
+                
+            }
+            
+            else  {
+                
+                     adjacent_list[ M[x] ].push_back( M[y] ) ;  
+                
+            }
+
+                 
+
+        }
+
+        int starting_node , TTL ;
+
+        while( cin >> starting_node >> TTL )  {
+
+            if( starting_node == 0 && TTL == 0 )  {
+
+                break ;  
+
+            }
+
+            memset( visited , 0 , sizeof(visited) ) ;
+
+            memset( level , 0 , sizeof(level) ) ;  
+
+            BFS( adjacent_list , M[starting_node] , TTL ) ;
+
+            cout << "Case " << caseno << ": " << not_reachable_node_count() << " nodes not reachable from node " << starting_node << " with TTL = " << TTL << "." << endl ;
+
+            caseno++ ;
+
+        }  
+
+    }
+
+    return 0 ;
+
+}
