@@ -1,0 +1,51 @@
+#include <bits/stdc++.h>
+#define LL long long
+
+using namespace std ;  
+
+int main() 
+{ 
+	
+	int N , M ;
+	
+	while( cin >> N >> M )  {
+	    
+	    if( N == 0 && M == 0 )  break ;
+	    
+	    map<int,int> KonoSuba ;   // :) 
+	    
+	    int x , y ;
+	    
+	    while( N-- )  {
+	        
+	        cin >> x ;
+	        
+	        KonoSuba[x]++ ;
+	        
+	    }
+	    
+	    while( M-- )  {
+	        
+	        cin >> y ;
+	        
+	        KonoSuba[y]++ ;
+	        
+	    }
+	    
+	    map<int,int>::iterator it ;     // could've used "auto"
+	    
+	    int cnt = 0 ;
+	    
+	    for( it = KonoSuba.begin() ; it != KonoSuba.end() ; it++ )  {
+	        
+	        if( it->second >= 2 )  cnt++ ;
+	        
+	    }
+	    
+	    cout << cnt << endl ;  
+	    
+	}
+	
+	return 0; 
+	
+} 
